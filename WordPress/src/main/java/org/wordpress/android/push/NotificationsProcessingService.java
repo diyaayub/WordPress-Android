@@ -1,11 +1,10 @@
 package org.wordpress.android.push;
 
-import android.app.Service;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
@@ -42,7 +41,7 @@ import static org.wordpress.android.ui.notifications.NotificationsListFragment.N
  * - approve
  */
 
-public class NotificationsProcessingService extends Service {
+public class NotificationsProcessingService extends IntentService {
 
     public static final String ARG_ACTION_TYPE = "action_type";
     public static final String ARG_ACTION_LIKE = "action_like";
@@ -73,16 +72,14 @@ public class NotificationsProcessingService extends Service {
         context.startService(intent);
     }
 
-    public static void stopService(Context context) {
-        if (context == null) return;
-
-        Intent intent = new Intent(context, NotificationsProcessingService.class);
-        context.stopService(intent);
+    public NotificationsProcessingService() {
+        super("NotificationsProcessingService");
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    protected void onHandleIntent(Intent intent) {
+        final QuickActionProcessor proc = new QuickActionProcessor(this, intent);
+        proc.process();
     }
 
     @Override
@@ -97,33 +94,17 @@ public class NotificationsProcessingService extends Service {
         super.onDestroy();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // Offload to a separate thread.
-        final QuickActionProcessor proc = new QuickActionProcessor(this, intent, startId);
-        new Thread(new Runnable() {
-            public void run() {
-                proc.process();
-            }
-        }).start();
-
-        return START_NOT_STICKY;
-    }
-
     private class QuickActionProcessor {
         private String mNoteId;
         private String mReplyText;
         private String mActionType;
         private Note mNote;
-        private int mTaskId;
         private Context mContext;
         private Intent mIntent;
 
-        public QuickActionProcessor(Context ctx, Intent intent, int taskId) {
+        public QuickActionProcessor(Context ctx, Intent intent) {
             mContext = ctx;
             mIntent = intent;
-            mTaskId = taskId;
         }
 
         public void process() {
@@ -151,6 +132,13 @@ public class NotificationsProcessingService extends Service {
             }
 
             showIntermediateMessageToUser(getString(R.string.comment_q_action_updating));
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                // Restore interrupt status.
+                Thread.currentThread().interrupt();
+            }
 
             if (mActionType != null) {
                 RestRequest.Listener listener =
@@ -245,7 +233,6 @@ public class NotificationsProcessingService extends Service {
                     dismissProcessingNotification();
                 }}, 3000); // show the success message for 3 seconds, then dismiss
 
-            stopSelf(mTaskId);
         }
 
         /*
@@ -266,8 +253,6 @@ public class NotificationsProcessingService extends Service {
                 errorMessage = getString(R.string.error_generic);
             }
             showFinalMessageToUser(errorMessage);
-
-            stopSelf(mTaskId);
         }
 
         private void showIntermediateMessageToUser(String message) {

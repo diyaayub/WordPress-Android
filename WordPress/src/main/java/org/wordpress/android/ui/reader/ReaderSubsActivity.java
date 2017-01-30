@@ -349,7 +349,7 @@ public class ReaderSubsActivity extends AppCompatActivity
             }
         };
 
-        ReaderTagActions.addTag(tag, actionListener);
+        new ReaderTagActions().addTag(tag, actionListener);
     }
 
     /*
@@ -393,7 +393,7 @@ public class ReaderSubsActivity extends AppCompatActivity
                 }
             }
         };
-        ReaderBlogActions.checkUrlReachable(blogUrl, requestListener);
+        new ReaderBlogActions().checkUrlReachable(blogUrl, requestListener);
     }
 
     private void followBlogUrl(String normUrl) {
@@ -418,7 +418,7 @@ public class ReaderSubsActivity extends AppCompatActivity
         // note that this uses the endpoint to follow as a feed since typed URLs are more
         // likely to point to a feed than a wp blog (and the endpoint should internally
         // follow it as a blog if it is one)
-        ReaderBlogActions.followFeedByUrl(normUrl, followListener);
+        new ReaderBlogActions().followFeedByUrl(normUrl, followListener);
     }
 
     /*

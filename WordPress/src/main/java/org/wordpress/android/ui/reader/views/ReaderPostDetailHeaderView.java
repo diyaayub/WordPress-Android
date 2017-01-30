@@ -122,9 +122,9 @@ public class ReaderPostDetailHeaderView extends LinearLayout {
             }
         };
         if (mPost.isExternal) {
-            ReaderBlogActions.updateFeedInfo(mPost.feedId, null, listener);
+            new ReaderBlogActions().updateFeedInfo(mPost.feedId, null, listener);
         } else {
-            ReaderBlogActions.updateBlogInfo(mPost.blogId, null, listener);
+            new ReaderBlogActions().updateBlogInfo(mPost.blogId, null, listener);
         }
     }
 
@@ -237,9 +237,9 @@ public class ReaderPostDetailHeaderView extends LinearLayout {
 
         boolean result;
         if (mPost.isExternal) {
-            result = ReaderBlogActions.followFeedById(mPost.feedId, isAskingToFollow, listener);
+            result = new ReaderBlogActions().followFeedById(mPost.feedId, isAskingToFollow, listener);
         } else {
-            result = ReaderBlogActions.followBlogById(mPost.blogId, isAskingToFollow, listener);
+            result = new ReaderBlogActions().followBlogById(mPost.blogId, isAskingToFollow, listener);
         }
 
         if (result) {

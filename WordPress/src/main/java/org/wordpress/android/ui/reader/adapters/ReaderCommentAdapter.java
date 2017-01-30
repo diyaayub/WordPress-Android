@@ -366,7 +366,7 @@ public class ReaderCommentAdapter extends RecyclerView.Adapter<RecyclerView.View
         boolean isAskingToLike = !comment.isLikedByCurrentUser;
         ReaderAnim.animateLikeButton(holder.countLikes.getImageView(), isAskingToLike);
 
-        if (!ReaderCommentActions.performLikeAction(comment, isAskingToLike)) {
+        if (!new ReaderCommentActions().performLikeAction(comment, isAskingToLike)) {
             ToastUtils.showToast(context, R.string.reader_toast_err_generic);
             return;
         }

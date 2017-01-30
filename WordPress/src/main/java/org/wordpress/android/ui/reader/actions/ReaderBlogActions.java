@@ -28,6 +28,10 @@ import java.net.HttpURLConnection;
 
 public class ReaderBlogActions {
 
+    public ReaderBlogActions() {
+        // noop
+    }
+
     public static class BlockedBlogResult {
         public long blogId;
         public ReaderPostList deletedPosts;
@@ -38,7 +42,7 @@ public class ReaderBlogActions {
         return (json != null ? json.toString() : "");
     }
 
-    public static boolean followBlogById(final long blogId,
+    public boolean followBlogById(final long blogId,
                                          final boolean isAskingToFollow,
                                          final ActionListener actionListener) {
         if (blogId == 0) {
@@ -91,7 +95,7 @@ public class ReaderBlogActions {
         return true;
     }
 
-    public static boolean followFeedById(final long feedId,
+    public boolean followFeedById(final long feedId,
                                          final boolean isAskingToFollow,
                                          final ActionListener actionListener) {
         ReaderBlog blogInfo = ReaderBlogTable.getFeedInfo(feedId);
@@ -117,10 +121,12 @@ public class ReaderBlogActions {
         return true;
     }
 
-    public static void followFeedByUrl(final String feedUrl,
+    public void followFeedByUrl(final String feedUrl,
                                        final ActionListener actionListener) {
         if (TextUtils.isEmpty(feedUrl)) {
-            ReaderActions.callActionListener(actionListener, false);
+            if (actionListener != null) {
+                actionListener.onActionResult(false);
+            }
             return;
         }
 
@@ -148,7 +154,7 @@ public class ReaderBlogActions {
         });
     }
 
-    private static boolean internalFollowFeed(
+    private boolean internalFollowFeed(
             final long feedId,
             final String feedUrl,
             final boolean isAskingToFollow,
@@ -212,7 +218,7 @@ public class ReaderBlogActions {
     /*
      * helper routine when following a blog from a post view
      */
-    public static boolean followBlogForPost(ReaderPost post,
+    public boolean followBlogForPost(ReaderPost post,
                                             boolean isAskingToFollow,
                                             ActionListener actionListener) {
         if (post == null) {
@@ -267,7 +273,7 @@ public class ReaderBlogActions {
     /*
      * request info about a specific blog
      */
-    public static void updateBlogInfo(long blogId,
+    public void updateBlogInfo(long blogId,
                                       final String blogUrl,
                                       final UpdateBlogInfoListener infoListener) {
         // must pass either a valid id or url
@@ -313,7 +319,7 @@ public class ReaderBlogActions {
             WordPress.getRestClientUtilsV1_1().get("read/sites/" + UrlUtils.urlEncode(UrlUtils.getHost(blogUrl)), listener, errorListener);
         }
     }
-    public static void updateFeedInfo(long feedId, String feedUrl, final UpdateBlogInfoListener infoListener) {
+    public void updateFeedInfo(long feedId, String feedUrl, final UpdateBlogInfoListener infoListener) {
         RestRequest.Listener listener = new RestRequest.Listener() {
             @Override
             public void onResponse(JSONObject jsonObject) {
@@ -337,7 +343,7 @@ public class ReaderBlogActions {
         }
         WordPress.getRestClientUtilsV1_1().get(path, listener, errorListener);
     }
-    private static void handleUpdateBlogInfoResponse(JSONObject jsonObject, UpdateBlogInfoListener infoListener) {
+    private void handleUpdateBlogInfoResponse(JSONObject jsonObject, UpdateBlogInfoListener infoListener) {
         if (jsonObject == null) {
             if (infoListener != null) {
                 infoListener.onResult(null);
@@ -357,7 +363,7 @@ public class ReaderBlogActions {
      * tests whether the passed url can be reached - does NOT use authentication, and does not
      * account for 404 replacement pages used by ISPs such as Charter
      */
-    public static void checkUrlReachable(final String blogUrl,
+    public void checkUrlReachable(final String blogUrl,
                                          final ReaderActions.OnRequestListener requestListener) {
         // listener is required
         if (requestListener == null) return;
@@ -404,7 +410,7 @@ public class ReaderBlogActions {
      * block a blog - result includes the list of posts that were deleted by the block so they
      * can be restored if the user undoes the block
      */
-    public static BlockedBlogResult blockBlogFromReader(final long blogId, final ActionListener actionListener) {
+    public BlockedBlogResult blockBlogFromReader(final long blogId, final ActionListener actionListener) {
         final BlockedBlogResult blockResult = new BlockedBlogResult();
         blockResult.blogId = blogId;
         blockResult.deletedPosts = ReaderPostTable.getPostsInBlog(blogId, 0, false);
@@ -442,7 +448,7 @@ public class ReaderBlogActions {
         return blockResult;
     }
 
-    public static void undoBlockBlogFromReader(final BlockedBlogResult blockResult) {
+    public void undoBlockBlogFromReader(final BlockedBlogResult blockResult) {
         if (blockResult == null) {
             return;
         }

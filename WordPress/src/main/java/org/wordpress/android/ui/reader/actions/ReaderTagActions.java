@@ -18,14 +18,22 @@ import org.wordpress.android.util.JSONUtils;
 import org.wordpress.android.util.VolleyUtils;
 
 public class ReaderTagActions {
-    private ReaderTagActions() {
-        throw new AssertionError();
+
+    public ReaderTagActions() {
+        // noop
     }
 
-    public static boolean deleteTag(final ReaderTag tag,
-                                    final ReaderActions.ActionListener actionListener) {
+    private void callActionListener(ReaderActions.ActionListener actionListener,
+                                    boolean succeeded) {
+        if (actionListener != null) {
+            actionListener.onActionResult(succeeded);
+        }
+    }
+
+    public boolean deleteTag(final ReaderTag tag,
+                             final ReaderActions.ActionListener actionListener) {
         if (tag == null) {
-            ReaderActions.callActionListener(actionListener, false);
+            callActionListener(actionListener, false);
             return false;
         }
 
@@ -36,7 +44,7 @@ public class ReaderTagActions {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 AppLog.i(T.READER, "delete tag succeeded");
-                ReaderActions.callActionListener(actionListener, true);
+                callActionListener(actionListener, true);
             }
         };
 
@@ -47,7 +55,7 @@ public class ReaderTagActions {
                 String error = VolleyUtils.errStringFromVolleyError(volleyError);
                 if (error.equals("not_subscribed")) {
                     AppLog.w(T.READER, "delete tag succeeded with error " + error);
-                    ReaderActions.callActionListener(actionListener, true);
+                    callActionListener(actionListener, true);
                     return;
                 }
 
@@ -57,7 +65,7 @@ public class ReaderTagActions {
                 // add back original tag
                 ReaderTagTable.addOrUpdateTag(tag);
 
-                ReaderActions.callActionListener(actionListener, false);
+                callActionListener(actionListener, false);
             }
         };
 
@@ -67,10 +75,10 @@ public class ReaderTagActions {
         return true;
     }
 
-    public static boolean addTag(final ReaderTag tag,
-                                 final ReaderActions.ActionListener actionListener) {
+    public boolean addTag(final ReaderTag tag,
+                          final ReaderActions.ActionListener actionListener) {
         if (tag == null) {
-            ReaderActions.callActionListener(actionListener, false);
+            callActionListener(actionListener, false);
             return false;
         }
 
@@ -92,7 +100,7 @@ public class ReaderTagActions {
                 // the response will contain the list of the user's followed tags
                 ReaderTagList tags = parseFollowedTags(jsonObject);
                 ReaderTagTable.replaceFollowedTags(tags);
-                ReaderActions.callActionListener(actionListener, true);
+                callActionListener(actionListener, true);
             }
         };
 
@@ -104,7 +112,7 @@ public class ReaderTagActions {
                 String error = VolleyUtils.errStringFromVolleyError(volleyError);
                 if (error.equals("already_subscribed")) {
                     AppLog.w(T.READER, "add tag succeeded with error " + error);
-                    ReaderActions.callActionListener(actionListener, true);
+                    callActionListener(actionListener, true);
                     return;
                 }
 
@@ -114,7 +122,7 @@ public class ReaderTagActions {
                 // revert on failure
                 ReaderTagTable.deleteTag(tag);
 
-                ReaderActions.callActionListener(actionListener, false);
+                callActionListener(actionListener, false);
             }
         };
 
@@ -127,22 +135,7 @@ public class ReaderTagActions {
     /*
      * return the user's followed tags from the response to read/tags/{tag}/mine/new
      */
-    /*
-        {
-        "added_tag": "84776",
-        "subscribed": true,
-        "tags": [
-            {
-                "display_name": "fitness",
-                "ID": "5189",
-                "slug": "fitness",
-                "title": "Fitness",
-                "URL": "https://public-api.wordpress.com/rest/v1.1/read/tags/fitness/posts"
-            },
-            ...
-        }
-     */
-    private static ReaderTagList parseFollowedTags(JSONObject jsonObject) {
+    private ReaderTagList parseFollowedTags(JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
         }

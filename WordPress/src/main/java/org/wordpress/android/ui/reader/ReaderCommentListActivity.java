@@ -185,7 +185,7 @@ public class ReaderCommentListActivity extends AppCompatActivity {
 
     private void updatePostAndComments() {
         //to do a complete refresh we need to get updated post and new comments
-        ReaderPostActions.updatePost(mPost, new ReaderActions.UpdateResultListener() {
+        new ReaderPostActions().updatePost(mPost, new ReaderActions.UpdateResultListener() {
             @Override
             public void onUpdateResult(ReaderActions.UpdateResult result) {
                 if (isFinishing()) {
@@ -449,7 +449,7 @@ public class ReaderCommentListActivity extends AppCompatActivity {
                                     R.string.reader_toast_err_already_liked);
 
                         } else {
-                            if (ReaderCommentActions.performLikeAction(comment, true) &&
+                            if (new ReaderCommentActions().performLikeAction(comment, true) &&
                                     getCommentAdapter().refreshComment(mCommentId)) {
                                 getCommentAdapter().setAnimateLikeCommentId(mCommentId);
 
@@ -631,7 +631,7 @@ public class ReaderCommentListActivity extends AppCompatActivity {
             }
         };
 
-        ReaderComment newComment = ReaderCommentActions.submitPostComment(
+        ReaderComment newComment = new ReaderCommentActions().submitPostComment(
                 getPost(),
                 fakeCommentId,
                 commentText,

@@ -24,6 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReaderCommentActions {
+
+    public ReaderCommentActions() {
+        // noop
+    }
+
     /*
      * used by post detail to generate a temporary "fake" comment id (see below)
      */
@@ -35,7 +40,7 @@ public class ReaderCommentActions {
      * add the passed comment text to the passed post - caller must pass a unique "fake" comment id
      * to give the comment that's generated locally
      */
-    public static ReaderComment submitPostComment(final ReaderPost post,
+    public ReaderComment submitPostComment(final ReaderPost post,
                                                   final long fakeCommentId,
                                                   final String commentText,
                                                   final long replyToCommentId,
@@ -120,7 +125,7 @@ public class ReaderCommentActions {
     /*
      * like or unlike the passed comment
      */
-    public static boolean performLikeAction(final ReaderComment comment, boolean isAskingToLike) {
+    public boolean performLikeAction(final ReaderComment comment, boolean isAskingToLike) {
         if (comment == null) {
             return false;
         }

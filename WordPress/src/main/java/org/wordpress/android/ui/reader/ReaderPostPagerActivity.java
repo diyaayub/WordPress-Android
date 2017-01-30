@@ -366,7 +366,7 @@ public class ReaderPostPagerActivity extends AppCompatActivity
                         mPostId = post.postId;
                     } else {
                         // not stored locally, so request it
-                        ReaderPostActions.requestBlogPost(blogIdentifier, postIdentifier,
+                        new ReaderPostActions().requestBlogPost(blogIdentifier, postIdentifier,
                                 new ReaderActions.OnRequestListener() {
                                     @Override
                                     public void onSuccess() {
@@ -624,7 +624,7 @@ public class ReaderPostPagerActivity extends AppCompatActivity
      */
     private void trackPost(long blogId, long postId) {
         // bump the page view
-        ReaderPostActions.bumpPageViewForPost(blogId, postId);
+        new ReaderPostActions().bumpPageViewForPost(blogId, postId);
 
         // analytics tracking
         AnalyticsUtils.trackWithReaderPostDetails(

@@ -763,7 +763,7 @@ public class ReaderPostListFragment extends Fragment
             }
         };
 
-        if (ReaderBlogActions.followBlogForPost(post, isAskingToFollow, actionListener)) {
+        if (new ReaderBlogActions().followBlogForPost(post, isAskingToFollow, actionListener)) {
             getPostAdapter().setFollowStatusForBlog(post.blogId, isAskingToFollow);
         }
     }
@@ -791,7 +791,7 @@ public class ReaderPostListFragment extends Fragment
 
         // perform call to block this blog - returns list of posts deleted by blocking so
         // they can be restored if the user undoes the block
-        final BlockedBlogResult blockResult = ReaderBlogActions.blockBlogFromReader(post.blogId, actionListener);
+        final BlockedBlogResult blockResult = new ReaderBlogActions().blockBlogFromReader(post.blogId, actionListener);
         // Only pass the blogID if available. Do not track feedID
         AnalyticsUtils.trackWithBlogDetails(
                 AnalyticsTracker.Stat.READER_BLOG_BLOCKED,
@@ -805,7 +805,7 @@ public class ReaderPostListFragment extends Fragment
         View.OnClickListener undoListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReaderBlogActions.undoBlockBlogFromReader(blockResult);
+                new ReaderBlogActions().undoBlockBlogFromReader(blockResult);
                 refreshPosts();
             }
         };

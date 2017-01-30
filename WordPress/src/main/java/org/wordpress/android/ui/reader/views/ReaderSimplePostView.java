@@ -150,7 +150,7 @@ public class ReaderSimplePostView extends LinearLayout {
         // disable follow button until call completes
         btnFollow.setEnabled(false);
 
-        ReaderBlogActions.followBlogById(mSimplePost.getSiteId(), isAskingToFollow, listener);
+        new ReaderBlogActions().followBlogById(mSimplePost.getSiteId(), isAskingToFollow, listener);
         btnFollow.setIsFollowedAnimated(isAskingToFollow);
     }
 

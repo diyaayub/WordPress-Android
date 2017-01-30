@@ -87,9 +87,9 @@ public class ReaderSiteHeaderView extends LinearLayout {
                 }
             };
             if (mFeedId != 0) {
-                ReaderBlogActions.updateFeedInfo(mFeedId, null, listener);
+                new ReaderBlogActions().updateFeedInfo(mFeedId, null, listener);
             } else {
-                ReaderBlogActions.updateBlogInfo(mBlogId, null, listener);
+                new ReaderBlogActions().updateBlogInfo(mBlogId, null, listener);
             }
         }
     }
@@ -193,9 +193,9 @@ public class ReaderSiteHeaderView extends LinearLayout {
 
         boolean result;
         if (mFeedId != 0) {
-            result = ReaderBlogActions.followFeedById(mFeedId, isAskingToFollow, listener);
+            result = new ReaderBlogActions().followFeedById(mFeedId, isAskingToFollow, listener);
         } else {
-            result = ReaderBlogActions.followBlogById(mBlogId, isAskingToFollow, listener);
+            result = new ReaderBlogActions().followBlogById(mBlogId, isAskingToFollow, listener);
         }
 
         if (result) {

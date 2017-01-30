@@ -45,14 +45,14 @@ public class ReaderPostActions {
 
     private static final int NUM_RELATED_POSTS_TO_REQUEST = 2;
 
-    private ReaderPostActions() {
-        throw new AssertionError();
+    public ReaderPostActions() {
+        // noop
     }
 
     /**
      * like/unlike the passed post
      */
-    public static boolean performLikeAction(final ReaderPost post,
+    public boolean performLikeAction(final ReaderPost post,
                                             final boolean isAskingToLike) {
         // do nothing if post's like state is same as passed
         boolean isCurrentlyLiked = ReaderPostTable.isPostLikedByCurrentUser(post);
@@ -108,7 +108,7 @@ public class ReaderPostActions {
      * get the latest version of this post - note that the post is only considered changed if the
      * like/comment count has changed, or if the current user's like/follow status has changed
      */
-    public static void updatePost(final ReaderPost localPost,
+    public void updatePost(final ReaderPost localPost,
                                   final UpdateResultListener resultListener) {
         String path = "read/sites/" + localPost.blogId + "/posts/" + localPost.postId + "/?meta=site,likes";
 
@@ -131,7 +131,7 @@ public class ReaderPostActions {
         WordPress.getRestClientUtilsV1_2().get(path, null, null, listener, errorListener);
     }
 
-    private static void handleUpdatePostResponse(final ReaderPost localPost,
+    private void handleUpdatePostResponse(final ReaderPost localPost,
                                                  final JSONObject jsonObject,
                                                  final UpdateResultListener resultListener) {
         if (jsonObject == null) {
@@ -200,7 +200,7 @@ public class ReaderPostActions {
      * updates local liking users based on the "likes" meta section of the post's json - requires
      * using the /sites/ endpoint with ?meta=likes - returns true if likes have changed
      */
-    private static boolean handlePostLikes(final ReaderPost post, JSONObject jsonPost) {
+    private boolean handlePostLikes(final ReaderPost post, JSONObject jsonPost) {
         if (post == null || jsonPost == null) {
             return false;
         }
@@ -226,7 +226,7 @@ public class ReaderPostActions {
     /**
      * similar to updatePost, but used when post doesn't already exist in local db
      **/
-    public static void requestBlogPost(final long blogId,
+    public void requestBlogPost(final long blogId,
             final long postId,
             final ReaderActions.OnRequestListener requestListener) {
         String path = "read/sites/" + blogId + "/posts/" + postId + "/?meta=site,likes";
@@ -236,7 +236,7 @@ public class ReaderPostActions {
     /**
      * similar to updatePost, but used when post doesn't already exist in local db
      **/
-    public static void requestFeedPost(final long feedId, final long feedItemId,
+    public void requestFeedPost(final long feedId, final long feedItemId,
             final ReaderActions.OnRequestListener requestListener) {
         String path = "read/feed/" + feedId + "/posts/" + feedItemId + "/?meta=site,likes";
         requestPost(WordPress.getRestClientUtilsV1_3(), path, requestListener);
@@ -245,14 +245,14 @@ public class ReaderPostActions {
     /**
      * similar to updatePost, but used when post doesn't already exist in local db
      **/
-    public static void requestBlogPost(final String blogSlug,
+    public void requestBlogPost(final String blogSlug,
             final String postSlug,
             final ReaderActions.OnRequestListener requestListener) {
         String path = "sites/" + blogSlug + "/posts/slug:" + postSlug + "/?meta=site,likes";
         requestPost(WordPress.getRestClientUtilsV1_1(), path, requestListener);
     }
 
-    private static void requestPost(RestClientUtils restClientUtils, String path, final ReaderActions
+    private void requestPost(RestClientUtils restClientUtils, String path, final ReaderActions
             .OnRequestListener requestListener) {
         com.wordpress.rest.RestRequest.Listener listener = new RestRequest.Listener() {
             @Override
@@ -299,11 +299,11 @@ public class ReaderPostActions {
                 + "&t="    + mRandom.nextInt();
     }
 
-    public static void bumpPageViewForPost(long blogId, long postId) {
+    public void bumpPageViewForPost(long blogId, long postId) {
         bumpPageViewForPost(ReaderPostTable.getBlogPost(blogId, postId, true));
     }
 
-    public static void bumpPageViewForPost(ReaderPost post) {
+    public void bumpPageViewForPost(ReaderPost post) {
         if (post == null) {
             return;
         }
@@ -350,7 +350,7 @@ public class ReaderPostActions {
      * request posts related to the passed one, endpoint returns a combined list of related posts
      * posts from across wp.com and related posts from the same site as the passed post
      */
-    public static void requestRelatedPosts(final ReaderPost sourcePost) {
+    public void requestRelatedPosts(final ReaderPost sourcePost) {
         if (sourcePost == null) return;
 
         RestRequest.Listener listener = new RestRequest.Listener() {
@@ -377,7 +377,7 @@ public class ReaderPostActions {
         WordPress.getRestClientUtilsV1_2().get(path, null, null, listener, errorListener);
     }
 
-    private static void handleRelatedPostsResponse(final ReaderPost sourcePost,
+    private void handleRelatedPostsResponse(final ReaderPost sourcePost,
                                                    final JSONObject jsonObject) {
         if (jsonObject == null) return;
 

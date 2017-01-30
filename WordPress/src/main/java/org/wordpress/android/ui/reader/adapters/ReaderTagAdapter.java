@@ -114,7 +114,7 @@ public class ReaderTagAdapter extends RecyclerView.Adapter<ReaderTagAdapter.TagV
             }
         };
 
-        boolean success = ReaderTagActions.deleteTag(tag, actionListener);
+        boolean success = new ReaderTagActions().deleteTag(tag, actionListener);
 
         if (success) {
             int index = mTags.indexOfTagName(tag.getTagSlug());

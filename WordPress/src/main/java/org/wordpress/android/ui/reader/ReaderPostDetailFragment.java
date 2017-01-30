@@ -415,7 +415,7 @@ public class ReaderPostDetailFragment extends Fragment
             likeCount.setSelected(isAskingToLike);
             ReaderAnim.animateLikeButton(likeCount.getImageView(), isAskingToLike);
 
-            boolean success = ReaderPostActions.performLikeAction(mPost, isAskingToLike);
+            boolean success = new ReaderPostActions().performLikeAction(mPost, isAskingToLike);
             if (!success) {
                 likeCount.setSelected(!isAskingToLike);
                 return;
@@ -515,7 +515,7 @@ public class ReaderPostDetailFragment extends Fragment
      */
     private void requestRelatedPosts() {
         if (hasPost() && mPost.isWP()) {
-            ReaderPostActions.requestRelatedPosts(mPost);
+            new ReaderPostActions().requestRelatedPosts(mPost);
         }
     }
 
@@ -669,7 +669,7 @@ public class ReaderPostDetailFragment extends Fragment
                 }
             }
         };
-        ReaderPostActions.updatePost(mPost, resultListener);
+        new ReaderPostActions().updatePost(mPost, resultListener);
     }
 
     private void refreshIconCounts() {
@@ -829,9 +829,9 @@ public class ReaderPostDetailFragment extends Fragment
         };
 
         if (mIsFeed) {
-            ReaderPostActions.requestFeedPost(mBlogId, mPostId, listener);
+            new ReaderPostActions().requestFeedPost(mBlogId, mPostId, listener);
         } else {
-            ReaderPostActions.requestBlogPost(mBlogId, mPostId, listener);
+            new ReaderPostActions().requestBlogPost(mBlogId, mPostId, listener);
         }
     }
 

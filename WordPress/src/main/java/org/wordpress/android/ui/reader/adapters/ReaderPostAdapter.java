@@ -795,7 +795,7 @@ public class ReaderPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         boolean isAskingToLike = !isCurrentlyLiked;
         ReaderAnim.animateLikeButton(holder.likeCount.getImageView(), isAskingToLike);
 
-        if (!ReaderPostActions.performLikeAction(post, isAskingToLike)) {
+        if (!new ReaderPostActions().performLikeAction(post, isAskingToLike)) {
             ToastUtils.showToast(context, R.string.reader_toast_err_generic);
             return;
         }
@@ -804,7 +804,7 @@ public class ReaderPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             AnalyticsUtils.trackWithReaderPostDetails(AnalyticsTracker.Stat.READER_ARTICLE_LIKED, post);
             // Consider a like to be enough to push a page view - solves a long-standing question
             // from folks who ask 'why do I have more likes than page views?'.
-            ReaderPostActions.bumpPageViewForPost(post);
+            new ReaderPostActions().bumpPageViewForPost(post);
         } else {
             AnalyticsUtils.trackWithReaderPostDetails(AnalyticsTracker.Stat.READER_ARTICLE_LIKED, post);
         }
@@ -841,7 +841,7 @@ public class ReaderPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         };
 
-        if (!ReaderBlogActions.followBlogForPost(post, isAskingToFollow, actionListener)) {
+        if (!new ReaderBlogActions().followBlogForPost(post, isAskingToFollow, actionListener)) {
             ToastUtils.showToast(context, R.string.reader_toast_err_generic);
             return;
         }
